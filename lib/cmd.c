@@ -11,7 +11,7 @@
 #include "dfmem.h"
 #include "utils.h"
 #include "ports.h"
-#include "stopwatch.h"
+#include "sclock.h"
 #include "led.h"
 #include "blink.h"
 #include "payload.h"
@@ -200,7 +200,7 @@ static void cmdStartTelemetry(unsigned char type, unsigned char status, unsigned
 	idx+=2;
       samplesToSave = TelemControl.count; // **** this runs sample capture in T5 interrupt
 	TelemControl.skip = frame[idx]+(frame[idx+1]<<8); 
-	swatchReset();
+	sclockReset();
 	if(TelemControl.count > 0) 
 	{ TelemControl.onoff = 1;   // use just steering servo sample capture
 	 } // enable telemetry last 

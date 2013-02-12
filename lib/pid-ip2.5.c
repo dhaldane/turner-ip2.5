@@ -21,7 +21,7 @@
 #include "move_queue.h"
 //#include "hall.h"
 #include "p33Fxxxx.h"
-#include "stopwatch.h"
+#include "sclock.h"
 //#include "incap.h" // input capture
 #include "ams-enc.h"
 #include "tih.h"
@@ -322,7 +322,7 @@ void EmergencyStop(void)
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void) 
 { int j;
 //  unsigned long time_start, time_end; 
-//	time_start =  swatchTic(); 
+//	time_start =  sclockGetTime();
 
     if (t1_ticks == T1_MAX) t1_ticks = 0;
     t1_ticks++;
@@ -339,7 +339,7 @@ void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void)
    	}  
 
 	pidSetControl();	// run control even if not updating setpoint to hold position 
-//	time_end =  swatchToc();
+//	time_end =  sclockGetTime();
     //Clear Timer1 interrupt flag
     _T1IF = 0;
 }

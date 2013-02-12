@@ -3,7 +3,7 @@
 #include "pid-ip2.5.h"
 #include "utils.h"
 #include "telemetry.h"
-#include "stopwatch.h"
+#include "sclock.h"
 #include "dfmem.h"
 #include "radio.h"
 #include "../MyConsts/radio_settings.h"
@@ -42,7 +42,7 @@ void telemGetPID(unsigned long sampIdx)
 {
 	telemPIDdata.telemStruct.sampleIndex = sampIdx;
 //Stopwatch was already started in the cmdSpecialTelemetry function
-	telemPIDdata.telemStruct.timeStamp = (long)swatchTic(); 
+	telemPIDdata.telemStruct.timeStamp = (long)sclockGetTime(); 
 
 // since T1 has higher priority, these state readings might get interrupted 
 	CRITICAL_SECTION_START  // need coherent sample without T1 int updates
@@ -76,7 +76,7 @@ void telemSaveSample(unsigned long sampIdx)
 /* telemU data;
 			data.telemStruct.sampleIndex = sampIdx;
 //Stopwatch was already started in the cmdSpecialTelemetry function
-			data.telemStruct.timeStamp = (long)swatchTic(); 
+			data.telemStruct.timeStamp = (long)sclockGetTime(); 
 
 // since T1 has higher priority, these state readings might get interrupted 
 	CRITICAL_SECTION_START  // need coherent sample without T1 int updates

@@ -60,7 +60,7 @@
 #include <stdlib.h>
 #include "radio_settings.h"
 #include "ams-enc.h"
-#include "stopwatch.h"
+#include "sclock.h"
 #include "tih.h"
 
 volatile Queue fun_queue;
@@ -345,7 +345,7 @@ unsigned char test_motor(unsigned char type, unsigned char status, \
 	 on_time = (unsigned long)( (data[3] << 8) + data[2]);
 	 dutycycle = (int)((data[5] << 8) + data[4]);
 	 tiHSetDC(motor_id, dutycycle);
-	swatchDelayMs(on_time);
+	delay_ms(on_time);
   	tiHSetDC(motor_id, 0);
 // send an ack packet back - could have data later...
   // Get a new packet from the pool
