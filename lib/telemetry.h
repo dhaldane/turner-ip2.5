@@ -40,4 +40,4 @@ void telemGetPID(unsigned long sampIdx);
 void telemSaveSample(unsigned long sampIdx);
 void telemFlashSample(telemU* data);
 void setSampleSaveCount(int count);
-void telemFlashReadback(unsigned int count);
+//void telemFlashReadback(unsigned int count);

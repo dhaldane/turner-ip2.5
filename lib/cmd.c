@@ -39,6 +39,7 @@
 unsigned char tx_frame_[127];
 
 extern MoveQueue moveq;
+volatile Queue fun_queue;
 extern int offsz;
 extern pidPos pidObjs[NUM_PIDS];
 extern telemU telemPIDdata;
@@ -74,10 +75,10 @@ static void cmdNop(unsigned char type, unsigned char status, unsigned char lengt
 //User commands
 static void cmdSetThrustOpenLoop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static void cmdGetPIDTelemetry(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
-static void cmdSetCtrldTurnRate(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+//static void cmdSetCtrldTurnRate(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static void cmdGetImuLoopZGyro(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static void cmdSetMoveQueue(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
-static void cmdSetSteeringGains(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
+//static void cmdSetSteeringGains(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static void cmdSoftwareReset(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static void cmdSpecialTelemetry(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
 static void cmdEraseSector(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame);
@@ -119,10 +120,10 @@ void cmdSetup(void) {
 	cmd_func[CMD_SET_THRUST_CLOSEDLOOP] = &cmdSetThrustClosedLoop;
 	cmd_func[CMD_SET_PID_GAINS] = &cmdSetPIDGains;
 	cmd_func[CMD_GET_PID_TELEMETRY] = &cmdGetPIDTelemetry;
-	cmd_func[CMD_SET_CTRLD_TURN_RATE] = &cmdSetCtrldTurnRate;
+	//cmd_func[CMD_SET_CTRLD_TURN_RATE] = &cmdSetCtrldTurnRate;
 	cmd_func[CMD_GET_IMU_LOOP_ZGYRO] = &cmdGetImuLoopZGyro;
 	cmd_func[CMD_SET_MOVE_QUEUE] = &cmdSetMoveQueue;
-	cmd_func[CMD_SET_STEERING_GAINS] = &cmdSetSteeringGains;
+	//cmd_func[CMD_SET_STEERING_GAINS] = &cmdSetSteeringGains;
 	cmd_func[CMD_SOFTWARE_RESET] = &cmdSoftwareReset;
 	cmd_func[CMD_SPECIAL_TELEMETRY] = &cmdSpecialTelemetry;
 	cmd_func[CMD_ERASE_SECTORS] = &cmdEraseSector;
@@ -134,6 +135,7 @@ void cmdSetup(void) {
 }
 
 // Jan 2013- new command handler using function queue
+
 void cmdPushFunc(MacPacket rx_packet)
 {   Payload rx_payload;
     unsigned char command, status;  
@@ -180,7 +182,6 @@ static void cmdEraseSector(unsigned char type, unsigned char status, unsigned ch
 	CRITICAL_SECTION_START   //  can't have interrupt process grabbing SPI2
 	dfmemEraseSectorsForSamples( (unsigned long) 300, sizeof(telemStruct_t));
 	CRITICAL_SECTION_END
-	mpuUpdate(); // make sure we can still use SPI2
 }
 
 
@@ -200,7 +201,7 @@ static void cmdStartTelemetry(unsigned char type, unsigned char status, unsigned
 	idx+=2;
       samplesToSave = TelemControl.count; // **** this runs sample capture in T5 interrupt
 	TelemControl.skip = frame[idx]+(frame[idx+1]<<8); 
-	sclockReset();
+	//sclockReset();
 	if(TelemControl.count > 0) 
 	{ TelemControl.onoff = 1;   // use just steering servo sample capture
 	 } // enable telemetry last 
@@ -223,7 +224,7 @@ static void cmdGetPIDTelemetry(unsigned char type, unsigned char status, unsigne
 static void cmdFlashReadback(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame)
 {	unsigned int count;
 	count = frame[0] + (frame[1] << 8);
-	telemFlashReadback(count);	
+	//telemFlashReadback(count);	
 /**********  will need to disable mpuUpdate to read flash... ******/
 //	readDFMemBySample(count);
 }

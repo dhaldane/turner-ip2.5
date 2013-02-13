@@ -14,10 +14,8 @@
 #include "blink.h"
 
 int samplesToSave;
-extern int gdata[3];
-extern int gyroAvg;
-extern int xldata[3];  // accelerometer data 
-extern int offsx, offsy, offsz;
+int gdata[3];	//gyrodata
+int xldata[3];  // accelerometer data 
 extern SpicStatus port_status[SPIC_NUM_PORTS];  
 
 // structure to keep track of telemetry recording
@@ -56,15 +54,18 @@ void telemGetPID(unsigned long sampIdx)
 		telemPIDdata.telemStruct.bemfR = bemf[1];
 	CRITICAL_SECTION_END
 
-   		telemPIDdata.telemStruct.gyroX = gdata[0] - offsx;
-		telemPIDdata.telemStruct.gyroY = gdata[1] - offsy;
-		telemPIDdata.telemStruct.gyroZ = gdata[2] - offsz; 
-		telemPIDdata.telemStruct.gyroAvg = gyroAvg;
+		mpuBeginUpdate();
+		mpuGetGyro(&gdata);
+		mpuGetXl(&xldata);
+
+   		telemPIDdata.telemStruct.gyroX = gdata[0];
+		telemPIDdata.telemStruct.gyroY = gdata[1];
+		telemPIDdata.telemStruct.gyroZ = gdata[2]; 
 		telemPIDdata.telemStruct.accelX = xldata[0];
 		telemPIDdata.telemStruct.accelY = xldata[1];
 		telemPIDdata.telemStruct.accelZ = xldata[2];
 		telemPIDdata.telemStruct.Vbatt = (int) adcGetVbatt();
-		telemPIDdata.telemStruct.sOut = steeringPID.output;
+		//telemPIDdata.telemStruct.sOut = steeringPID.output;
 		return;
 }
 
@@ -120,6 +121,8 @@ void setSampleSaveCount(int count){
 
 
 //read telemetry from Flash Memory and send radio packets back
+// TODO (dhaldane) : This blocking won't work with DMA
+/*
 void telemFlashReadback(unsigned int count)
 {  unsigned char status = 0;
 	unsigned int sampLen = sizeof(telemStruct_t);
@@ -144,3 +147,4 @@ void telemFlashReadback(unsigned int count)
 	EnableIntT5;
 }
 
+*/

@@ -53,7 +53,7 @@
 #include "utils.h"
 #include "radio.h"
 #include "pwm.h"
-//#include "mpu6000.h"
+#include "mpu6000.h"
 #include "xl.h"
 #include "dfmem.h"
 #include <string.h>
@@ -119,7 +119,7 @@ unsigned char test_gyro(unsigned char type, unsigned char status,\
 	mpuUpdate();
 
     // Get a new packet from the pool
-    	packet = radioRequestPacket(sizeof(mpu_data));
+    	packet = radioRequestPacket(sizeof(mpuObj));
     	if(packet == NULL) return 0;
     	macSetDestAddr(packet, RADIO_DEST_ADDR);
 
@@ -129,7 +129,7 @@ unsigned char test_gyro(unsigned char type, unsigned char status,\
      	paySetType(pld, type);
  
 	// Read gyro data into the payload
-	memcpy(payGetData(pld), & mpu_data, sizeof(mpu_data)); // copy gyro data to packet
+	memcpy(payGetData(pld), & mpuObj, sizeof(mpuObj)); // copy gyro data to packet
 
    	// Enqueue the packet for broadcast
   	while(!radioEnqueueTxPacket(packet));

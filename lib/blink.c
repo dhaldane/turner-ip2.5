@@ -5,7 +5,7 @@ setting */
 // leave LEDs off when done 
 
 #include "led.h"
-#include "stopwatch.h"
+#include "sclock.h"
 
 // n number of blinks, k number of milliseconds
 void blink_leds(int n, int k)
@@ -15,13 +15,13 @@ void blink_leds(int n, int k)
 	   { LED_RED = 0;
 	     LED_GREEN = 1;
 	     LED_BLUE = 0;
-		swatchDelayUs(100); /* wait 100 us */
+		delay_us(100); /* wait 100 us */
 	   }
 	   for (j = 0; j < 10*k; j++)
 	  { LED_RED = 1;
 	     LED_GREEN = 0;
 	     LED_BLUE = 1;
-		swatchDelayUs(100); /* wait 100 us */
+		delay_us(100); /* wait 100 us */
 	   }
  	   LED_RED = 0;
 	   LED_GREEN = 0;

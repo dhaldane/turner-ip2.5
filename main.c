@@ -22,7 +22,7 @@
 #include "utils.h"
 #include "queue.h"
 #include "radio.h"
-#include "MyConsts/radio_settings.h"
+#include "settings.h"
 #include "tests.h" 
 #include "dfmem.h"
 #include "interrupts.h"
@@ -58,21 +58,21 @@ int main() {
 //    SetupTimer1(); setup in pidSetup
     SetupTimer2();
     sclockSetup();
-    mpuSetup();
+    mpuSetup(1);        //cs==2
     amsHallSetup();
-    dfmemSetup(); 
+    dfmemSetup(0);      //cs==1
     tiHSetup();   // set up H bridge drivers
 	cmdSetup();  // setup command table
 	pidSetup();  // setup PID control
 
     // Radio setup
-    radioInit(RADIO_RXPQ_MAX_SIZE, RADIO_TXPQ_MAX_SIZE);
-    radioSetChannel(RADIO_MY_CHAN);
+    radioInit(RADIO_RXPQ_MAX_SIZE, RADIO_TXPQ_MAX_SIZE, 0);     //cs==1
+    radioSetChannel(RADIO_CHANNEL);
     radioSetSrcAddr(RADIO_SRC_ADDR);
-    radioSetSrcPanID(RADIO_PAN_ID);
+    radioSetSrcPanID(RADIO_SRC_PAN_ID);
     setupTimer6(RADIO_FCY); // Radio and buffer loop timer
 /**** set up steering last - so dfmem can finish ****/
-	steeringSetup(); // steering and Timer5 Int 
+	//steeringSetup(); // steering and Timer5 Int
 	blink_leds(4,500); // blink LEDs 4 times at half sec
     char j;
     for(j=0; j<3; j++){

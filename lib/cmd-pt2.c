@@ -196,7 +196,7 @@ static void cmdSetMoveQueue(unsigned char type, unsigned char status, unsigned c
 		mqPush(moveq, move);
 	}
 }
-
+/*
 static void cmdSetSteeringGains(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame){
 	int Kp, Ki, Kd, Kaw, ff;
 	int idx = 0;
@@ -218,6 +218,7 @@ static void cmdSetSteeringGains(unsigned char type, unsigned char status, unsign
     // Enqueue the packet for broadcast
     while(!radioEnqueueTxPacket(packet));
 }
+*/
 
 static void cmdSetThrustOpenLoop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame){
 	//unsigned char chan1[4], chan2[4];
@@ -265,7 +266,7 @@ static void cmdSteer(unsigned char type, unsigned char status, unsigned char len
 
 
 
-
+/*
 
 static void cmdSetCtrldTurnRate(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame){
 	int rate;
@@ -285,7 +286,7 @@ static void cmdSetCtrldTurnRate(unsigned char type, unsigned char status, unsign
     // Enqueue the packet for broadcast
     while(!radioEnqueueTxPacket(packet));
 }
-
+*/
 
 static void cmdSpecialTelemetry(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame){
 /*	int count;
