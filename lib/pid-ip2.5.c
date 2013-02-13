@@ -370,7 +370,9 @@ void pidGetSetpoint(int j)
 
  // select either back emf or backwd diff for vel est
 #define VEL_BEMF 1
+
 /* update state variables including motor position and velocity */
+
 void pidGetState()
 {   int i;
 	long p_state, oldpos[NUM_PIDS], velocity;
