@@ -54,7 +54,6 @@ int main() {
     SetupPorts();
 
     SetupInterrupts();
- //   SetupADC(); old A/D
     adcSetup();   // DMA A/D
 //    SetupTimer1(); setup in pidSetup
     SetupTimer2();
@@ -77,39 +76,46 @@ int main() {
 
     //Motor Test
 
-//    int interval[3], delta[3], vel[3];
-//    pidSetGains(0,400,0,0,0,0);
-//    pidSetGains(1,400,0,0,0,0);//
+    // int interval[3], delta[3], vel[3];
+    // pidSetGains(0,400,0,0,0,0);
+    // pidSetGains(1,400,0,0,0,0);
 
-//    //set vel profile
-//    int i;
-//    for (i= 0; i < 4; i++)
-//    {
-//        delta[i] = 0x4000;
-//        interval[i] = 800;
-//        vel[i] = 50;
-//    }//
-//
-
-//    setPIDVelProfile(0, interval, delta, vel);
-//    setPIDVelProfile(1, interval, delta, vel);
-//    pidZeroPos(0); pidZeroPos(1);
-//    //Set thrust closed loop
-//  
-//    pidSetInput(1 ,0, 1000);
-//    pidOn(1);
+    // //set vel profile
+    // int i;
+    // for (i= 0; i < 4; i++)
+    // {
+    //     delta[i] = 0x4000;
+    //     interval[i] = 256;
+    //     vel[i] = 64;
+    // }
 
 
+    // setPIDVelProfile(0, interval, delta, vel);
+    // setPIDVelProfile(1, interval, delta, vel);
+    // //Set thrust closed loop
+  
+    // pidSetInput(0 ,0, 1000);
+    // pidOn(0);
+    // pidSetInput(1 ,0, 1000);
+    // pidOn(1);
+
+    //Open loop moto test
+    // DisableIntT1;   // since PID interrupt overwrites PWM values
+
+    // tiHSetDC(1, 0x200);
+    // tiHSetDC(2, 0x200); 
+    // delay_ms(4000);
+    // tiHSetDC(1,0);
+    // tiHSetDC(2,0);
+    // EnableIntT1;
 
     LED_2 = ON;
-
-
 
     //EnableIntT2;
     DisableIntT1;
     while(1){
-        pidGetState();
-        delay_ms(100);
+        amsGetPos(0);amsGetPos(1);
+        delay_ms(10);
 
     }
     return 0;
