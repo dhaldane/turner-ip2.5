@@ -6,7 +6,7 @@
 #include "sclock.h"
 #include "dfmem.h"
 #include "radio.h"
-#include "../MyConsts/radio_settings.h"
+#include "../MyConsts/settings.h"
 #include "timer.h"
 #include "cmd.h"
 #include "adc_pid.h"
@@ -134,7 +134,7 @@ void telemFlashReadback(unsigned int count)
 	   if ((sampNum+1) != data.telemStruct.sampleIndex)
 		while(1) // hang here if bad read
 		{ blink_leds(1,200); }
-	   radioConfirmationPacket(RADIO_DEST_ADDR,
+	   radioConfirmationPacket(RADIO_DST_ADDR,
 						     CMD_SPECIAL_TELEMETRY, 
 						     status, sampLen, (unsigned char *) &data);  
 	// delay_ms(25);	// slow down for XBee 57.6 K

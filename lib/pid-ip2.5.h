@@ -9,7 +9,7 @@
 #define DEFAULT_FF  0
 
 #define GAIN_SCALER         100
-#define NUM_PIDS	2
+#define NUM_PIDS	1 //2
 #define NUM_VELS	4 // 8 velocity setpoints per cycle
 
 

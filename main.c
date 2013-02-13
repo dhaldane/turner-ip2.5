@@ -36,6 +36,7 @@
 #include "steering.h"
 #include "consts.h"
 #include "adc_pid.h"
+#include "led.h"
 
 Payload rx_payload;
 MacPacket rx_packet;
@@ -73,31 +74,43 @@ int main() {
     setupTimer6(RADIO_FCY); // Radio and buffer loop timer
 /**** set up steering last - so dfmem can finish ****/
 	//steeringSetup(); // steering and Timer5 Int
-	blink_leds(4,500); // blink LEDs 4 times at half sec
-    char j;
-    for(j=0; j<3; j++){
-        LED_2 = ON;
-        delay_ms(250);
-        LED_2 = OFF;
-        delay_ms(250);
-    }
+
+    //Motor Test
+
+//    int interval[3], delta[3], vel[3];
+//    pidSetGains(0,400,0,0,0,0);
+//    pidSetGains(1,400,0,0,0,0);//
+
+//    //set vel profile
+//    int i;
+//    for (i= 0; i < 4; i++)
+//    {
+//        delta[i] = 0x4000;
+//        interval[i] = 800;
+//        vel[i] = 50;
+//    }//
+//
+
+//    setPIDVelProfile(0, interval, delta, vel);
+//    setPIDVelProfile(1, interval, delta, vel);
+//    pidZeroPos(0); pidZeroPos(1);
+//    //Set thrust closed loop
+//  
+//    pidSetInput(1 ,0, 1000);
+//    pidOn(1);
+
+
 
     LED_2 = ON;
 
-    EnableIntT2;
+
+
+    //EnableIntT2;
+    DisableIntT1;
     while(1){
-        while(!queueIsEmpty(fun_queue))
-        {
-            test = queuePop(fun_queue);
-            rx_payload = macGetPayload(test->packet);
-            tf = test->tf;
-            (*tf)(payGetType(rx_payload),   // old commands don't use packet type
-                    payGetStatus(rx_payload), 
-			  payGetDataLength(rx_payload), 
-                    payGetData(rx_payload));
-            radioReturnPacket(test->packet);
-            free(test);
-        }
+        pidGetState();
+        delay_ms(100);
+
     }
     return 0;
 }

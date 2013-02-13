@@ -4,7 +4,7 @@
 void cmdEcho(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame) 
 { // MacPacket packet; Payload pld;
 	//Send confirmation packet
-	radioConfirmationPacket(RADIO_DEST_ADDR, CMD_ECHO, status, length, frame);  
+	radioConfirmationPacket(RADIO_DST_ADDR, CMD_ECHO, status, length, frame);  
     return; //success     
 }
 
@@ -27,7 +27,7 @@ void cmdWhoAmI(unsigned char type, unsigned char status, unsigned char length, u
 	while((i < 127) && version_string[i] != '\0')
 	{ i++;}
 	string_length=i;     
-	radioConfirmationPacket(RADIO_DEST_ADDR, CMD_WHO_AM_I, status, string_length, version_string);  
+	radioConfirmationPacket(RADIO_DST_ADDR, CMD_WHO_AM_I, status, string_length, version_string);  
       return; //success
 }
 

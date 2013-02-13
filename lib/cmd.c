@@ -26,7 +26,7 @@
 #include "tests.h"
 #include "queue.h"
 #include "version.h"
-#include "../MyConsts/radio_settings.h"
+#include "../MyConsts/settings.h"
 #include "tiH.h"
 #include "timer.h"
 #include "telemetry.h"
@@ -53,9 +53,9 @@ extern moveCmdT currentMove, idleMove, manualMove;
 //extern static char version[];
 
 // use an array of function pointer to avoid a number of case statements
-// MAX_CMD_FUNC_SIZE is defined in cmd_const.h
+// MAX_CMD_FUNC is defined in cmd_const.h
 // arg to all commands are: type, status, length, *frame
-void (*cmd_func[MAX_CMD_FUNC_SIZE])(unsigned char, unsigned char, unsigned char, unsigned char*);
+void (*cmd_func[MAX_CMD_FUNC])(unsigned char, unsigned char, unsigned char, unsigned char*);
 void cmdError(void);
 /*-----------------------------------------------------------------------------
  *          Declaration of static functions
@@ -102,7 +102,7 @@ void cmdSetup(void) {
     unsigned int i;
 
     // initialize the array of func pointers with Nop()
-    for(i = 0; i < MAX_CMD_FUNC_SIZE; ++i) {
+    for(i = 0; i < MAX_CMD_FUNC; ++i) {
         cmd_func[i] = &cmdNop;
     }
 
@@ -134,6 +134,28 @@ void cmdSetup(void) {
 	cmd_func[CMD_ZERO_POS] = &cmdZeroPos;
 }
 
+void cmdHandleRadioRxBuffer(void) {
+
+    Payload pld;
+    unsigned char command, status;
+
+    if ((pld = radioDequeueRxPacket()) != NULL) {
+
+        status = payGetStatus(pld);
+        command = payGetType(pld);
+
+
+        //Due to bugs, command may be a surprious value; check explicitly
+        if (command <= MAX_CMD_FUNC) {
+            cmd_func[command](command, status, pld->data_length, payGetData(pld));
+        }
+
+        payDelete(pld);
+    }
+
+    return;
+}
+
 // Jan 2013- new command handler using function queue
 
 void cmdPushFunc(MacPacket rx_packet)
@@ -146,7 +168,7 @@ void cmdPushFunc(MacPacket rx_packet)
 	  test->packet = rx_packet;
 
         command = payGetType(rx_payload);
-	   if( command < MAX_CMD_FUNC_SIZE)
+	   if( command < MAX_CMD_FUNC)
 	  {     test->tf=cmd_func[command];
 		   queuePush(fun_queue, test); 
 	  }   
@@ -212,7 +234,7 @@ static void cmdGetPIDTelemetry(unsigned char type, unsigned char status, unsigne
 								 unsigned char *frame)
 { 	unsigned int sampLen = sizeof(telemStruct_t);
 	telemGetPID(packetNum);  // get current state
-	 radioConfirmationPacket(RADIO_DEST_ADDR,
+	 radioConfirmationPacket(RADIO_DST_ADDR,
 						     CMD_SPECIAL_TELEMETRY, 
 						     status, sampLen, (unsigned char *) &telemPIDdata);  
 	packetNum++;
@@ -232,5 +254,54 @@ static void cmdFlashReadback(unsigned char type, unsigned char status, unsigned 
 
 
 //#include "cmd-motor.c"  // ZeroPos, SetThrust, SetVelProfile, SetPIDGains
-#include "cmd-aux.c"   // auxiliary functions Echo, WhoAmI, Error
+
 #include "cmd-pt2.c"
+
+/*-----------------------------------------------------------------------------
+ *          AUX functions
+-----------------------------------------------------------------------------*/
+void cmdEcho(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame) 
+{ // MacPacket packet; Payload pld;
+	//Send confirmation packet
+	radioConfirmationPacket(RADIO_DST_ADDR, CMD_ECHO, status, length, frame);  
+    return; //success     
+}
+
+static void cmdNop(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame) {
+    Nop();
+}
+
+
+static void cmdSoftwareReset(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame)
+{
+	asm volatile("reset");
+}
+
+// send robot info when queried
+void cmdWhoAmI(unsigned char type, unsigned char status, unsigned char length, unsigned char *frame) 
+{   unsigned char i, string_length; unsigned char *version_string;
+// maximum string length to avoid packet size limit
+	version_string = (unsigned char *)versionGetString();
+	i = 0;
+	while((i < 127) && version_string[i] != '\0')
+	{ i++;}
+	string_length=i;     
+	radioConfirmationPacket(RADIO_DST_ADDR, CMD_WHO_AM_I, status, string_length, version_string);  
+      return; //success
+}
+
+// handle bad command packets
+// we might be in the middle of a dangerous maneuver- better to stop and signal we need resent command
+// wait for command to be resent
+void cmdError()
+{ int i;
+ 	EmergencyStop();
+	for(i= 0; i < 10; i++)
+	 {	LED_1 ^= 1;
+			delay_ms(200);
+			LED_2 ^= 1;
+			delay_ms(200);
+			LED_3 ^= 1;
+			delay_ms(200);
+          }
+}
