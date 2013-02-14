@@ -111,12 +111,22 @@ int main() {
 
     LED_2 = ON;
 
-    //EnableIntT2;
-    DisableIntT1;
+    EnableIntT2;
+    //DisableIntT1;
     while(1){
-        amsGetPos(0);amsGetPos(1);
-        delay_ms(10);
-
+  while(!queueIsEmpty(fun_queue))
+        {
+            test = queuePop(fun_queue);
+            rx_payload = macGetPayload(test->packet);
+            tf = test->tf;
+            (*tf)(payGetType(rx_payload),
+                    payGetStatus(rx_payload),
+			  payGetDataLength(rx_payload),
+                    payGetData(rx_payload));
+            radioReturnPacket(test->packet);
+            free(test);
+        }
     }
     return 0;
+
 }

@@ -11,7 +11,7 @@ import serial
 from callbackFunc import xbee_received
 import shared
 
-DEST_ADDR = '\x20\x52'
+DEST_ADDR = '\x20\x12'
 imudata_file_name = 'imudata.txt'
 telemetry = False
 imudata = []
