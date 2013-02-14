@@ -53,9 +53,9 @@ extern moveCmdT currentMove, idleMove, manualMove;
 //extern static char version[];
 
 // use an array of function pointer to avoid a number of case statements
-// MAX_CMD_FUNC is defined in cmd_const.h
+// MAX_HURRRRRRR is defined in cmd_const.h
 // arg to all commands are: type, status, length, *frame
-void (*cmd_func[MAX_CMD_FUNC])(unsigned char, unsigned char, unsigned char, unsigned char*);
+void (*HURRRRRRR[MAX_HURRRRRRR])(unsigned char, unsigned char, unsigned char, unsigned char*);
 void cmdError(void);
 /*-----------------------------------------------------------------------------
  *          Declaration of static functions
@@ -102,36 +102,36 @@ void cmdSetup(void) {
     unsigned int i;
 
     // initialize the array of func pointers with Nop()
-    for(i = 0; i < MAX_CMD_FUNC; ++i) {
-        cmd_func[i] = &cmdNop;
+    for(i = 0; i < MAX_HURRRRRRR; ++i) {
+        HURRRRRRR[i] = &cmdNop;
     }
 
-    cmd_func[CMD_ECHO] = &cmdEcho;
-    cmd_func[CMD_SET_THRUST] = &cmdSetThrust;
-    cmd_func[CMD_SET_STEER] = &cmdSteer;    
-    cmd_func[CMD_GET_IMU_DATA] = &cmdGetImuData;
-    cmd_func[CMD_GET_IMU_LOOP] = &cmdGetImuLoop;
-    cmd_func[CMD_START_IMU_SAVE] = &cmdStartImuDataSave;
-    cmd_func[CMD_STOP_IMU_SAVE] = &cmdStopImuDataSave;
-    cmd_func[CMD_TX_SAVED_IMU_DATA] = &cmdTxSavedImuData;
-    cmd_func[CMD_ERASE_MEM_SECTOR] = &cmdEraseMemSector;
+    HURRRRRRR[CMD_ECHO] = &cmdEcho;
+    HURRRRRRR[CMD_SET_THRUST] = &cmdSetThrust;
+    HURRRRRRR[CMD_SET_STEER] = &cmdSteer;    
+    HURRRRRRR[CMD_GET_IMU_DATA] = &cmdGetImuData;
+    HURRRRRRR[CMD_GET_IMU_LOOP] = &cmdGetImuLoop;
+    HURRRRRRR[CMD_START_IMU_SAVE] = &cmdStartImuDataSave;
+    HURRRRRRR[CMD_STOP_IMU_SAVE] = &cmdStopImuDataSave;
+    HURRRRRRR[CMD_TX_SAVED_IMU_DATA] = &cmdTxSavedImuData;
+    HURRRRRRR[CMD_ERASE_MEM_SECTOR] = &cmdEraseMemSector;
 	//Use commands
-	cmd_func[CMD_SET_THRUST_OPENLOOP] = &cmdSetThrustOpenLoop;
-	cmd_func[CMD_SET_THRUST_CLOSEDLOOP] = &cmdSetThrustClosedLoop;
-	cmd_func[CMD_SET_PID_GAINS] = &cmdSetPIDGains;
-	cmd_func[CMD_GET_PID_TELEMETRY] = &cmdGetPIDTelemetry;
-	//cmd_func[CMD_SET_CTRLD_TURN_RATE] = &cmdSetCtrldTurnRate;
-	cmd_func[CMD_GET_IMU_LOOP_ZGYRO] = &cmdGetImuLoopZGyro;
-	cmd_func[CMD_SET_MOVE_QUEUE] = &cmdSetMoveQueue;
-	//cmd_func[CMD_SET_STEERING_GAINS] = &cmdSetSteeringGains;
-	cmd_func[CMD_SOFTWARE_RESET] = &cmdSoftwareReset;
-	cmd_func[CMD_SPECIAL_TELEMETRY] = &cmdSpecialTelemetry;
-	cmd_func[CMD_ERASE_SECTORS] = &cmdEraseSector;
-	cmd_func[CMD_FLASH_READBACK] = &cmdFlashReadback;
-	cmd_func[CMD_SET_VEL_PROFILE] = &cmdSetVelProfile;
-	cmd_func[CMD_WHO_AM_I] = &cmdWhoAmI;
-	cmd_func[CMD_START_TELEM] = &cmdStartTelemetry;
-	cmd_func[CMD_ZERO_POS] = &cmdZeroPos;
+	HURRRRRRR[CMD_SET_THRUST_OPENLOOP] = &cmdSetThrustOpenLoop;
+	HURRRRRRR[CMD_SET_THRUST_CLOSEDLOOP] = &cmdSetThrustClosedLoop;
+	HURRRRRRR[CMD_SET_PID_GAINS] = &cmdSetPIDGains;
+	HURRRRRRR[CMD_GET_PID_TELEMETRY] = &cmdGetPIDTelemetry;
+	//HURRRRRRR[CMD_SET_CTRLD_TURN_RATE] = &cmdSetCtrldTurnRate;
+	HURRRRRRR[CMD_GET_IMU_LOOP_ZGYRO] = &cmdGetImuLoopZGyro;
+	HURRRRRRR[CMD_SET_MOVE_QUEUE] = &cmdSetMoveQueue;
+	//HURRRRRRR[CMD_SET_STEERING_GAINS] = &cmdSetSteeringGains;
+	HURRRRRRR[CMD_SOFTWARE_RESET] = &cmdSoftwareReset;
+	HURRRRRRR[CMD_SPECIAL_TELEMETRY] = &cmdSpecialTelemetry;
+	HURRRRRRR[CMD_ERASE_SECTORS] = &cmdEraseSector;
+	HURRRRRRR[CMD_FLASH_READBACK] = &cmdFlashReadback;
+	HURRRRRRR[CMD_SET_VEL_PROFILE] = &cmdSetVelProfile;
+	HURRRRRRR[CMD_WHO_AM_I] = &cmdWhoAmI;
+	HURRRRRRR[CMD_START_TELEM] = &cmdStartTelemetry;
+	HURRRRRRR[CMD_ZERO_POS] = &cmdZeroPos;
 }
 
 void cmdHandleRadioRxBuffer(void) {
@@ -146,8 +146,8 @@ void cmdHandleRadioRxBuffer(void) {
 
 
         //Due to bugs, command may be a surprious value; check explicitly
-        if (command <= MAX_CMD_FUNC) {
-            cmd_func[command](command, status, pld->data_length, payGetData(pld));
+        if (command <= MAX_HURRRRRRR) {
+            HURRRRRRR[command](command, status, pld->data_length, payGetData(pld));
         }
 
         payDelete(pld);
@@ -168,8 +168,8 @@ void cmdPushFunc(MacPacket rx_packet)
 	  test->packet = rx_packet;
 
         command = payGetType(rx_payload);
-	   if( command < MAX_CMD_FUNC)
-	  {     test->tf=cmd_func[command];
+	   if( command < MAX_HURRRRRRR)
+	  {     test->tf=HURRRRRRR[command];
 		   queuePush(fun_queue, test); 
 	  }   
 	  else 
